@@ -120,5 +120,41 @@ ZStack {
 
 Gradients
 
+SwiftUI gives us three kinds of gradients to work with, and like colors they are also views that can be drawn in our UI.
+Gradients are made up of several components:
+* An array of colors to show
+* Size and direction information
+* The type of gradient to use
+
+For example, a linear gradient goes in one direction, so we provide it with a start and end point like this:
+
+LinearGradient(gradient: Gradient(colors: [.white, .black]), startPoint: .top, endPoint: .bottom)
+
+As an alternative, radial gradients move outward in a circle shape, so instead of specifying a direction we specify a start and end radius – how far from the center of the circle the color should start and stop changing. For example:
+
+RadialGradient(gradient: Gradient(colors: [.blue, .black]), center: .center, startRadius: 20, endRadius: 200)
+
+The last gradient type is called an angular gradient, although you might have heard it referred to elsewhere as a conic or conical gradient. This cycles colors around a circle rather than radiating outward, and can create some beautiful effects.
+
+For example, this cycles through a range of colors in a single gradient, centered on the middle of the gradient:
+
+AngularGradient(gradient: Gradient(colors: [.red, .yellow, .green, .blue, .purple, .red]), center: .center)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
