@@ -140,19 +140,103 @@ For example, this cycles through a range of colors in a single gradient, centere
 
 AngularGradient(gradient: Gradient(colors: [.red, .yellow, .green, .blue, .purple, .red]), center: .center)
 
+Gradients
+
+SwiftUI gives us three kinds of gradients to work with, and like colors they are also views that can be drawn in our UI.
+Gradients are made up of several components:
+* An array of colors to show
+* Size and direction information
+* The type of gradient to use
+
+For example, a linear gradient goes in one direction, so we provide it with a start and end point like this:
+
+LinearGradient(gradient: Gradient(colors: [.white, .black]), startPoint: .top, endPoint: .bottom)
+
+As an alternative, radial gradients move outward in a circle shape, so instead of specifying a direction we specify a start and end radius – how far from the center of the circle the color should start and stop changing. For example:
+
+RadialGradient(gradient: Gradient(colors: [.blue, .black]), center: .center, startRadius: 20, endRadius: 200)
+
+The last gradient type is called an angular gradient, although you might have heard it referred to elsewhere as a conic or conical gradient. This cycles colors around a circle rather than radiating outward, and can create some beautiful effects.
+
+For example, this cycles through a range of colors in a single gradient, centered on the middle of the gradient:
+
+AngularGradient(gradient: Gradient(colors: [.red, .yellow, .green, .blue, .purple, .red]), center: .center)
 
 
+Buttons and images
+
+The simplest way to make a button is one we’ve looked at previously: when it just contains some text you pass in the title of the button, along with a closure that should be run when the button is tapped:
+
+Button("Delete selection") {
+    print("Now deleting…")
+}
+
+That could be any function rather than just a closure.
+
+struct ContentView: View {
+    var body: some View {
+        Button("Delete selection", action: executeDelete)
+    }
+
+    func executeDelete() {
+        print("Now deleting…")
+    }
+}
+
+SwiftUI has a dedicated Image type for handling pictures in your apps, and there are three main ways you will create them:
+
+* Image("pencil") will load an image called “Pencil” that you have added to your project.
+* Image(decorative: "pencil") will load the same image, but won’t read it out for users who have enabled the screen reader. This is useful for images that don’t convey additional important information.
+* Image(systemName: "pencil") will load the pencil icon that is built into iOS. This uses Apple’s SF Symbols icon collection, and you can search for icons you like – download Apple’s free SF Symbols app from the web to see the full set.
+
+If you want both text and image at the same time, SwiftUI has a dedicated type called Label.
 
 
+Showing alert messages
 
+If something important happens, a common way of notifying the user is using an alert – a pop up window that contains a title, message, and one or two buttons depending on what you need.
 
+But think about it: when should an alert be shown and how? Views are a function of our program state, and alerts aren’t an exception to that. So, rather than saying “show the alert”, we instead create our alert and set the conditions under which it should be shown.
 
+A basic SwiftUI alert has a title and a button that dismisses it, but the more interesting part is how we present that alert: we don’t assign the alert to a variable then write something like myAlert.show(), because that would be back to the old “series of events” way of thinking.
+Instead, we create some state that tracks whether our alert is showing, like this:
 
+@State private var showingAlert = false
 
+We then attach our alert somewhere to our user interface, telling it to use that state to determine whether the alert is presented or not. SwiftUI will watch showingAlert, and as soon as it becomes true it will show the alert.
 
+struct ContentView: View {
+    @State private var showingAlert = false
 
+    var body: some View {
+        Button("Show Alert") {
+            showingAlert = true
+        }
+        .alert("Important message", isPresented: $showingAlert) {
+            Button("OK") { }
+        }
+    }
+}
 
+That attaches the alert to the button, but honestly it doesn’t matter where the alert() modifier is used – all we’re doing is saying that an alert exists and is shown when showingAlert is true.
+Take a close look at the alert() modifier:
 
+alert("Important message", isPresented: $showingAlert)
+
+The first part is the alert title, which is straightforward enough, but there’s also another two-way data binding because SwiftUI will automatically set showingAlert back to false when the alert is dismissed.
+
+Now look at the button:
+
+Button("OK") { }
+
+That’s an empty closure, meaning that we aren’t assigning any functionality to run when the button is pressed. That doesn’t matter, though, because any button inside an alert will automatically dismiss the alert – that closure is there to let us add any extra functionality beyond just dismissing the alert.
+
+You can add more buttons to your alert, and this is a particularly good place to add roles to make sure it’s clear what each button does:
+
+.alert("Important message", isPresented: $showingAlert) {
+    Button("Delete", role: .destructive) { }
+    Button("Cancel", role: .cancel) { }
+}
 
 
 
